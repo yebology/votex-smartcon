@@ -27,20 +27,12 @@ contract VotexTest is Test {
         _candidatePhotos[1] = "https://example.com/bob_photo.jpg";
 
         string[] memory _candidateVisions = new string[](2);
-        _candidateVisions[
-            0
-        ] = "Alice will focus on economic growth and healthcare reform.";
-        _candidateVisions[
-            1
-        ] = "Bob will prioritize environmental policies and education improvement.";
+        _candidateVisions[0] = "Alice will focus on economic growth and healthcare reform.";
+        _candidateVisions[1] = "Bob will prioritize environmental policies and education improvement.";
 
         string[] memory _candidateMissions = new string[](2);
-        _candidateMissions[
-            0
-        ] = "Alice's mission is to improve healthcare accessibility and job creation.";
-        _candidateMissions[
-            1
-        ] = "Bob's mission is to enhance environmental sustainability and reduce inequality.";
+        _candidateMissions[0] = "Alice's mission is to improve healthcare accessibility and job creation.";
+        _candidateMissions[1] = "Bob's mission is to enhance environmental sustainability and reduce inequality.";
 
         votex.createNewElection(
             _electionTitle,
@@ -75,18 +67,13 @@ contract VotexTest is Test {
         uint256 actualElectionTotal = votex.getElections().length;
 
         uint256 expectedElectionTotalCandidateInOneElection = 2;
-        uint256 actualElectionTotalCandidateInOneElection = votex
-            .getCandidatesIdInOneElection(0)
-            .length;
+        uint256 actualElectionTotalCandidateInOneElection = votex.getCandidatesIdInOneElection(0).length;
 
         uint256 expectedTotalCandidate = 2;
         uint256 actualTotalCandidate = votex.getCandidates().length;
 
         assertEq(expectedElectionTotal, actualElectionTotal);
-        assertEq(
-            expectedElectionTotalCandidateInOneElection,
-            actualElectionTotalCandidateInOneElection
-        );
+        assertEq(expectedElectionTotalCandidateInOneElection, actualElectionTotalCandidateInOneElection);
         assertEq(expectedTotalCandidate, actualTotalCandidate);
     }
 
@@ -119,11 +106,7 @@ contract VotexTest is Test {
     {
         vm.startPrank(address(1));
         votex.voteCandidate(0, 1);
-        vm.expectRevert(
-            abi.encodeWithSelector(Votex.VoterAlreadyVote.selector),
-            address(1),
-            0
-        );
+        vm.expectRevert(abi.encodeWithSelector(Votex.VoterAlreadyVote.selector), address(1), 0);
         votex.voteCandidate(0, 0);
         vm.stopPrank();
     }

@@ -14,6 +14,7 @@ contract Votex {
         string candidateVision;
         string candidateMission;
     }
+
     struct Election {
         uint256 id;
         string electionTitle;
@@ -35,23 +36,13 @@ contract Votex {
     Candidate[] private s_candidates;
 
     event newElectionHasBeenCreated(uint256 indexed electionId);
-    event newCandidateHasBeenAdded(
-        uint256 indexed electionId,
-        uint256 indexed candidateId
-    );
-    event newVoteHasBeenAdded(
-        address indexed voter,
-        uint256 indexed electionId,
-        uint256 indexed candidateId
-    );
+    event newCandidateHasBeenAdded(uint256 indexed electionId, uint256 indexed candidateId);
+    event newVoteHasBeenAdded(address indexed voter, uint256 indexed electionId, uint256 indexed candidateId);
 
     modifier onlyVoteOneTimeInOneElection(address _voter, uint256 _electionId) {
         console.log("modi", s_isAlreadyVote[msg.sender][_electionId]);
         console.log("modif", _voter);
-        require(
-            s_isAlreadyVote[msg.sender][_electionId] == false,
-            VoterAlreadyVote(_voter, _electionId)
-        );
+        require(s_isAlreadyVote[msg.sender][_electionId] == false, VoterAlreadyVote(_voter, _electionId));
         _;
     }
 
@@ -67,15 +58,10 @@ contract Votex {
         string[] memory _candidateMissions
     ) {
         require(
-            bytes(_electionTitle).length > 0 &&
-                bytes(_electionPicture).length > 0 &&
-                _electionStart > 0 &&
-                _electionEnd > 0 &&
-                _electionEnd > _electionStart &&
-                _electionStart <= block.timestamp &&
-                _candidateNames.length == _candidatePhotos.length &&
-                _candidatePhotos.length == _candidateVisions.length &&
-                _candidateVisions.length == _candidateMissions.length,
+            bytes(_electionTitle).length > 0 && bytes(_electionPicture).length > 0 && _electionStart > 0
+                && _electionEnd > 0 && _electionEnd > _electionStart && _electionStart <= block.timestamp
+                && _candidateNames.length == _candidatePhotos.length && _candidatePhotos.length == _candidateVisions.length
+                && _candidateVisions.length == _candidateMissions.length,
             InvalidElectionInput()
         );
         _;
@@ -139,10 +125,10 @@ contract Votex {
         emit newCandidateHasBeenAdded(_electionId, s_candidates.length - 1);
     }
 
-    function voteCandidate(
-        uint256 _electionId,
-        uint256 _candidateId
-    ) external onlyVoteOneTimeInOneElection(msg.sender, _electionId) {
+    function voteCandidate(uint256 _electionId, uint256 _candidateId)
+        external
+        onlyVoteOneTimeInOneElection(msg.sender, _electionId)
+    {
         s_electionVoter[_electionId].push(msg.sender);
         s_candidates[_candidateId].totalVote += 1;
         s_isAlreadyVote[msg.sender][_electionId] = true;
@@ -153,9 +139,7 @@ contract Votex {
         return s_elections;
     }
 
-    function getCandidatesIdInOneElection(
-        uint256 _electionId
-    ) external view returns (uint256[] memory) {
+    function getCandidatesIdInOneElection(uint256 _electionId) external view returns (uint256[] memory) {
         uint256[] memory candidateIds = s_electionCandidate[_electionId];
         return candidateIds;
     }
@@ -164,9 +148,7 @@ contract Votex {
         return s_candidates;
     }
 
-    function getTotalVoterInOneElection(
-        uint256 _electionId
-    ) external view returns (uint256) {
+    function getTotalVoterInOneElection(uint256 _electionId) external view returns (uint256) {
         return s_electionVoter[_electionId].length;
     }
 
